@@ -9,6 +9,44 @@ run produces the same on-disk report tree a CLI run does.
 from datetime import datetime
 from pathlib import Path
 
+_READING_GUIDE = """# 報告閱讀順序指南
+
+本資料夾為單次分析的完整輸出。沒選的分析師不會有對應檔案。
+
+## 快速版（3 分鐘）
+
+1. `5_portfolio/decision.md`：最終決策與理由。
+2. `3_trading/trader.md`：交易員的具體操作計畫。
+
+## 完整版（由淺入深）
+
+| 順序 | 檔案 | 看什麼 |
+|------|------|--------|
+| 1 | `complete_report.md` 開頭標頭 | 分析日期、模型、分析師與資料來源 |
+| 2 | `1_analysts/fundamentals.md` | 公司基本介紹、財報、獲利與估值 |
+| 3 | `1_analysts/market.md` | 股價走勢、技術指標 |
+| 4 | `1_analysts/news.md` | 近期新聞與總體經濟事件 |
+| 5 | `1_analysts/sentiment.md` | 市場與社群情緒 |
+| 6 | `2_research/bull.md` | 看多論點 |
+| 7 | `2_research/bear.md` | 看空論點 |
+| 8 | `2_research/manager.md` | 研究經理整合多空後的建議 |
+| 9 | `3_trading/trader.md` | 交易員的交易計畫 |
+| 10 | `4_risk/aggressive.md` | 激進派風險觀點 |
+| 11 | `4_risk/conservative.md` | 保守派風險觀點 |
+| 12 | `4_risk/neutral.md` | 中立派風險觀點 |
+| 13 | `5_portfolio/decision.md` | 投資組合經理的最終決策 |
+
+## 閱讀邏輯
+
+資料 → 辯論 → 計畫 → 風險 → 決策。想一次讀完，直接開 `complete_report.md`
+（章節順序：I 分析師 → II 研究 → III 交易 → IV 風險 → V 最終決策）。
+
+## 注意事項
+
+- 報告為 AI 產生的分析，僅供研究參考，不構成投資建議。
+- 請核對關鍵數字（財報、價格）與原始資料是否一致。
+"""
+
 
 def _header(ticker: str, final_state: dict, settings: dict | None) -> str:
     """The report's title and what produced it: analysis date, version, models, analysts, vendors."""
@@ -122,4 +160,5 @@ def write_report_tree(final_state: dict, ticker: str, save_path, settings: dict 
     (save_path / "complete_report.md").write_text(
         _header(ticker, final_state, settings) + "\n\n".join(sections), encoding="utf-8"
     )
+    (save_path / "READING_GUIDE.md").write_text(_READING_GUIDE, encoding="utf-8")
     return save_path / "complete_report.md"

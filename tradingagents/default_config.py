@@ -1,6 +1,8 @@
 import os
 
 _TRADINGAGENTS_HOME = os.path.join(os.path.expanduser("~"), ".tradingagents")
+# 專案根目錄；報告與日誌統一輸出到 <專案>/output（報告在 output/reports）
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Single source of truth for env-var → config-key overrides. To expose
 # a new config key for environment-based override, add a row here — no
@@ -77,7 +79,7 @@ def build_default_config() -> dict:
     the environment as it is now.
     """
     return _apply_env_overrides({
-        "results_dir": os.getenv("TRADINGAGENTS_RESULTS_DIR") or os.path.join(_TRADINGAGENTS_HOME, "logs"),
+        "results_dir": os.getenv("TRADINGAGENTS_RESULTS_DIR") or os.path.join(_PROJECT_ROOT, "output"),
         "data_cache_dir": os.getenv("TRADINGAGENTS_CACHE_DIR") or os.path.join(_TRADINGAGENTS_HOME, "cache"),
         "memory_log_path": os.getenv("TRADINGAGENTS_MEMORY_LOG_PATH") or os.path.join(_TRADINGAGENTS_HOME, "memory", "trading_memory.md"),
         # Optional cap on the number of resolved memory log entries. When set,
@@ -117,7 +119,7 @@ def build_default_config() -> dict:
         "checkpoint_enabled": False,
         # Output language for analyst reports and final decision
         # Internal agent debate stays in English for reasoning quality
-        "output_language": "English",
+        "output_language": "Traditional Chinese (繁體中文)",
         # Debate and discussion settings
         "max_debate_rounds": 1,
         "max_risk_discuss_rounds": 1,
