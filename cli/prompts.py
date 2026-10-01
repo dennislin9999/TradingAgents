@@ -35,32 +35,71 @@ def is_valid_ticker_input(value: str) -> bool:
     return not v or (all(ch.isalnum() or ch in "._-^=" for ch in v) and len(v) <= 32)
 
 
+def lookup_ticker_name(symbol: str) -> str | None:
+    """Company name Yahoo has for ``symbol``; None if it is unknown or offline.
+
+    Returns "" when the symbol has price data but no name. Network failures
+    return "?" so a flaky connection never blocks a run.
+    """
+    try:
+        import yfinance as yf
+
+        ticker = yf.Ticker(symbol)
+        if ticker.history(period="5d").empty:
+            return None
+        info = ticker.info or {}
+        return info.get("longName") or info.get("shortName") or ""
+    except Exception:
+        return "?"
+
+
+def confirm_ticker(symbol: str) -> bool:
+    """Show what the symbol resolves to and ask; False means ask for another."""
+    name = lookup_ticker_name(symbol)
+    if name == "?":  # could not check; do not block
+        return True
+    if name is None:
+        console.print(
+            f"[yellow]找不到代號 {symbol} 的價格資料，可能打錯了"
+            f"（例如 NVIDIA 應為 NVDA）。[/yellow]"
+        )
+    else:
+        console.print(f"[green]{symbol}[/green] → {name or '(無公司名稱)'}")
+    answer = questionary.confirm("這是你要分析的標的嗎？", default=name is not None).ask()
+    return bool(answer)
+
+
 def get_ticker() -> str:
     """Prompt the user to enter a ticker symbol, preserving exchange suffixes.
 
     Uses questionary.text (not typer.prompt, which strips trailing dot-suffixes
     like ``000404.SH`` on some shells) and validates the symbol charset so an
-    obvious typo is caught before the run starts.
+    obvious typo is caught before the run starts. The resolved symbol and its
+    company name are then shown for confirmation, which catches a well-formed
+    but wrong symbol such as NVIDIA for NVDA.
     """
-    ticker = questionary.text(
-        f"Enter ticker symbol (e.g. {TICKER_INPUT_EXAMPLES}):",
-        validate=lambda x: (
-            is_valid_ticker_input(x)
-            or "Please enter a valid ticker symbol, e.g. AAPL, 000404.SZ, 0700.HK, GC=F."
-        ),
-        style=questionary.Style(
-            [
-                ("text", "fg:green"),
-                ("highlighted", "noinherit"),
-            ]
-        ),
-    ).ask()
+    while True:
+        ticker = questionary.text(
+            f"Enter ticker symbol (e.g. {TICKER_INPUT_EXAMPLES}):",
+            validate=lambda x: (
+                is_valid_ticker_input(x)
+                or "Please enter a valid ticker symbol, e.g. AAPL, 000404.SZ, 0700.HK, GC=F."
+            ),
+            style=questionary.Style(
+                [
+                    ("text", "fg:green"),
+                    ("highlighted", "noinherit"),
+                ]
+            ),
+        ).ask()
 
-    if ticker is None:
-        console.print("\n[red]No ticker symbol provided. Exiting...[/red]")
-        exit(1)
+        if ticker is None:
+            console.print("\n[red]No ticker symbol provided. Exiting...[/red]")
+            exit(1)
 
-    return normalize_ticker_symbol(ticker) if ticker.strip() else "SPY"
+        symbol = normalize_ticker_symbol(ticker) if ticker.strip() else "SPY"
+        if confirm_ticker(symbol):
+            return symbol
 
 
 def parse_ticker(value: str) -> str:

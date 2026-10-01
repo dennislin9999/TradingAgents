@@ -386,11 +386,22 @@ def run_analysis(checkpoint: bool | None = None, portfolio=None, flags=None):
                    save=flags.get("save"), show=flags.get("show"))
 
 
+def _ask_yes_no(message: str, default: str = "Y") -> bool:
+    """Ask until the answer is recognisably yes or no; Enter takes the default."""
+    while True:
+        answer = typer.prompt(message, default=default).strip().upper()
+        if answer in ("Y", "YES", ""):
+            return True
+        if answer in ("N", "NO"):
+            return False
+        console.print("[yellow]請輸入 Y 或 N[/yellow]")
+
+
 def _offer_reports(final_state, graph, ticker, save=None, show=None):
     """Save the report tree and show it; ``save``/``show`` answer the questions when given."""
     asked = save is None
     if asked:
-        save = typer.prompt("Save report?", default="Y").strip().upper() in ("Y", "YES", "")
+        save = _ask_yes_no("Save report?")
     if save:
         # Under results_dir, not the working directory: in Docker the working
         # directory is inside the container and the report goes with it, while
@@ -408,6 +419,6 @@ def _offer_reports(final_state, graph, ticker, save=None, show=None):
             console.print(f"[red]Error saving report: {e}[/red]")
 
     if show is None:
-        show = typer.prompt("\nDisplay full report on screen?", default="Y").strip().upper() in ("Y", "YES", "")
+        show = _ask_yes_no("\nDisplay full report on screen?")
     if show:
         display_complete_report(final_state)
