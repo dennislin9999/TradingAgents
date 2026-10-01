@@ -210,4 +210,4 @@ def test_recording_a_run_writes_its_state_log(tmp_path):
 
     graph.record_decision("NVDA", "2026-09-23", state)
 
-    assert list(tmp_path.glob("NVDA/TradingAgentsStrategy_logs/full_states_log_2026-09-23.json"))
+    assert list(tmp_path.glob("logs/NVDA/TradingAgentsStrategy_logs/full_states_log_2026-09-23.json"))

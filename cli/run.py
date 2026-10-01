@@ -38,7 +38,7 @@ def _run_directory(config: dict, ticker: str, trade_date: str) -> Path:
     Every other path that interpolates a ticker checks it first; a value of
     ".." here would place the run outside the results directory.
     """
-    return Path(config["results_dir"]) / safe_ticker_component(ticker) / trade_date
+    return Path(config["results_dir"]) / "logs" / safe_ticker_component(ticker) / trade_date
 
 
 def _announce_checkpoint_state(graph, ticker: str, trade_date: str) -> None:

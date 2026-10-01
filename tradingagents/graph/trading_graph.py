@@ -444,7 +444,7 @@ class TradingAgentsGraph:
 
         # A ticker that would escape the results directory is rejected.
         safe_ticker = safe_ticker_component(final_state["company_of_interest"])
-        directory = Path(self.config["results_dir"]) / safe_ticker / "TradingAgentsStrategy_logs"
+        directory = Path(self.config["results_dir"]) / "logs" / safe_ticker / "TradingAgentsStrategy_logs"
         directory.mkdir(parents=True, exist_ok=True)
 
         log_path = directory / f"full_states_log_{trade_date}.json"

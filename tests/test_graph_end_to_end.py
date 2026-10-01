@@ -174,7 +174,7 @@ def test_a_graph_reused_across_runs_keeps_no_run_state(tmp_path, monkeypatch, of
 
     held = [v for v in vars(graph).values() if isinstance(v, dict) and TRADE_DATE in v]
     assert held == []
-    assert len(list(tmp_path.glob("results/NVDA/TradingAgentsStrategy_logs/*.json"))) == 2
+    assert len(list(tmp_path.glob("results/logs/NVDA/TradingAgentsStrategy_logs/*.json"))) == 2
 
 
 @pytest.mark.unit
