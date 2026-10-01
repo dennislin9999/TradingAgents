@@ -55,7 +55,7 @@ def test_save_reports_defaults_under_results_dir(tmp_path):
     graph.run_settings = lambda: SETTINGS
     out = graph.save_reports(_state(), "AAPL")
     assert out.exists()
-    assert out.parent.parent.name == "reports"  # results_dir/reports/AAPL_<stamp>/...
+    assert out.parent.parent == tmp_path  # results_dir/AAPL_<stamp>/...
     assert out.parent.name.startswith("AAPL_")
 
 

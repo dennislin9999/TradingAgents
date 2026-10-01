@@ -1,7 +1,7 @@
 import os
 
 _TRADINGAGENTS_HOME = os.path.join(os.path.expanduser("~"), ".tradingagents")
-# 專案根目錄；報告與日誌統一輸出到 <專案>/output（報告在 output/reports）
+# 專案根目錄；報告與日誌統一輸出到 <專案>/output（報告在 output/<代號>_<時間>）
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Single source of truth for env-var → config-key overrides. To expose

@@ -1,11 +1,11 @@
 # 報告閱讀順序指南
 
-每次分析的報告會輸出到 `output/reports/<股票代號>_<時間戳記>/`。
+每次分析的報告會輸出到 `output/<股票代號>_<時間戳記>/`。
 
 ## 目錄結構
 
 ```
-output/reports/<股票代號>_<時間戳記>/
+output/<股票代號>_<時間戳記>/
 ├── complete_report.md      # 完整合併報告（含標頭資訊）
 ├── 1_analysts/             # 分析師團隊
 │   ├── fundamentals.md

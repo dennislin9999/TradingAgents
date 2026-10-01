@@ -68,7 +68,7 @@ OPENAI_API_KEY=你的金鑰
 ## 四、報告在哪裡
 
 ```
-output\reports\<股票代號>_<時間戳記>\
+output\<股票代號>_<時間戳記>\
 ```
 
 資料夾內有 `READING_GUIDE.md`，說明各檔案的閱讀順序。建議先看：
